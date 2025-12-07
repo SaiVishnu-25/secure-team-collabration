@@ -1,0 +1,765 @@
+home and login page
+
+home page:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SETEAMS – Secure Team Collaboration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* dark edges, brighter center */
+      background:
+        radial-gradient(circle at center,
+          rgba(148, 163, 184, 0.38) 0%,
+          #020617 55%,
+          #020617 100%);
+      color: #e5e7eb;
+      padding: 24px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+    }
+
+    /* soft halo behind hero */
+    .wrapper::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      margin: auto;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(148,163,184,0.45), transparent 65%);
+      opacity: 0.65;
+      filter: blur(12px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* glassmorphism hero container (original dark style) */
+    .hero {
+      position: relative;
+      padding: 32px 32px 36px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+      gap: 32px;
+    }
+
+    /* header with logo + login */
+    .hero-header {
+      position: absolute;
+      top: 20px;
+      left: 32px;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0, #22d3ee, #0ea5e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #0b1220;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.45);
+    }
+
+    .brand-text {
+      font-weight: 650;
+      letter-spacing: 0.14em;
+      font-size: 13px;
+      text-transform: none;
+      color: #cbd5f5;
+    }
+
+    .login-btn {
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: linear-gradient(120deg, rgba(15,23,42,0.2), rgba(15,23,42,0.7));
+      color: #e5e7eb;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.18s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-btn span.icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 10%, #22c55e, #16a34a);
+      display: inline-block;
+    }
+
+    .login-btn:hover {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4), 0 14px 30px rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px);
+    }
+
+    /* left column: message */
+    .hero-main {
+      margin-top: 40px; /* clear header */
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: clamp(32px, 4vw, 44px);
+      line-height: 1.12;
+      margin-bottom: 14px;
+    }
+
+    .highlight {
+      background: linear-gradient(120deg, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #cbd5f5;
+      max-width: 430px;
+      margin-bottom: 20px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .pill {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(15, 23, 42, 0.75));
+      color: #e5e7eb;
+    }
+
+    .primary-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #22d3ee);
+      color: #020617;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.85);
+      transition: transform 0.16s ease-out, box-shadow 0.16s ease-out;
+    }
+
+    .primary-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 45px rgba(15, 23, 42, 0.95);
+    }
+
+    .primary-cta small {
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+    }
+
+    .meta-line {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .meta-line strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    /* right column: info card */
+    .hero-aside {
+      margin-top: 40px;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .glass-card {
+      width: 100%;
+      max-width: 340px;
+      padding: 18px 18px 20px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.25), rgba(15,23,42,0.8));
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #bbf7d0;
+      align-self: flex-start;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .metric {
+      flex: 1;
+      padding: 10px 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .metric-tag {
+      margin-top: 4px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a5b4fc;
+    }
+
+    .card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #cbd5f5;
+    }
+
+    .card-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e5e7eb;
+    }
+
+    .card-list {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #cbd5f5;
+      list-style: none;
+    }
+
+    .card-list li::before {
+      content: "• ";
+      color: #22d3ee;
+    }
+
+    .card-footer {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 80px 24px 28px;
+      }
+      .hero-header {
+        position: static;
+        margin-bottom: 10px;
+      }
+      .hero-main,
+      .hero-aside {
+        margin-top: 0;
+      }
+      .wrapper {
+        max-width: 640px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 16px;
+      }
+      .hero {
+        padding: 72px 18px 24px;
+      }
+      .hero-header {
+        flex-direction: row;
+      }
+      .subtitle {
+        max-width: none;
+      }
+      .metric-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <section class="hero">
+
+      <!-- top bar with logo + login -->
+      <header class="hero-header">
+        <div class="brand">
+          <div class="brand-logo">S</div>
+          <div class="brand-text">SEteams</div>
+        </div>
+
+        <!-- this button should open your actual login page / modal -->
+        <button class="login-btn" onclick="window.location.href='login.html'">
+          <span>Login</span>
+          <span class="icon"></span>
+        </button>
+      </header>
+
+      <!-- left column: main story -->
+      <div class="hero-main">
+        <p class="eyebrow">Secure teams for your company</p>
+
+        <h1 class="title">
+          Keep your team conversations
+          <span class="highlight">locked inside SEteams</span>.
+        </h1>
+
+        <p class="subtitle">
+          SEteams is a secure team collaboration web application where people from the same
+          company create private spaces to chat, share files, and make decisions without
+          leaking sensitive information.
+        </p>
+
+        <div class="pill-row">
+          <span class="pill">End‑to‑end encrypted rooms</span>
+          <span class="pill">Phishing‑link protection</span>
+          <span class="pill">Role‑based access control</span>
+        </div>
+
+        <button class="primary-cta" onclick="window.location.href='signup.html'">
+          <div>
+            Start a secure team
+            <br />
+            <small>Create your first workspace in minutes</small>
+          </div>
+        </button>
+
+        <p class="meta-line">
+          <strong>Designed for internal company use.</strong>
+          Block suspicious links, protect files, and keep all team activity inside a secure,
+          auditable environment.
+        </p>
+      </div>
+
+      <!-- right column: security card -->
+      <aside class="hero-aside">
+        <div class="glass-card">
+          <span class="badge">Security first workspace</span>
+
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Messages scanned</div>
+              <div class="metric-value">100%</div>
+              <div class="metric-tag">Anti‑phishing filter</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Access control</div>
+              <div class="metric-value">Granular</div>
+              <div class="metric-tag">Admin · Member · Guest</div>
+            </div>
+          </div>
+
+          <h3 class="card-title">What makes SEteams different?</h3>
+          <p class="card-text">
+            Unlike common messaging apps, SEteams is built only for companies that need private,
+            compliant communication channels.
+          </p>
+
+          <ul class="card-list">
+            <li>Detects and blocks suspicious or phishing links before they spread.</li>
+            <li>Encrypts sensitive data at rest in a hardened, secure database.</li>
+            <li>Tracks who accessed which file and when with audit logs.</li>
+          </ul>
+
+          <p class="card-footer">
+            Connect your team once and keep every conversation protected inside a single,
+            secure workspace.
+          </p>
+        </div>
+      </aside>
+
+    </section>
+  </div>
+</body>
+</html>
+
+
+login page code:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SEteams – Auth Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ------------------ GLOBAL STYLES ------------------ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle,rgba(148,163,184,0.38),#020617 55%);
+  color:#e5e7eb;padding:26px;
+}
+.hidden{display:none !important;}
+
+.wrapper{
+  width:100%;max-width:480px;position:relative;
+}
+.wrapper::before{
+  content:"";position:fixed;inset:0;margin:auto;width:460px;height:460px;
+  border-radius:50%;background:radial-gradient(circle,rgba(148,163,184,.4),transparent 70%);
+  opacity:.6;filter:blur(14px);pointer-events:none;z-index:-1;
+}
+
+/* ------------------ CARD BASE ------------------ */
+.card{
+  padding:34px 30px 40px;
+  border-radius:24px;
+  background:rgba(15,23,42,0.55);
+  border:1px solid rgba(148,163,184,0.35);
+  box-shadow:0 20px 45px rgba(15,23,42,0.75);
+  backdrop-filter:blur(16px);
+}
+
+/* Branding */
+.brand{
+  display:flex;align-items:baseline;gap:8px;margin-bottom:28px;justify-content:center;
+}
+.brand-logo{
+  width:34px;height:34px;border-radius:12px;
+  background:radial-gradient(circle at 20% 0,#22d3ee,#0ea5e9);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#0b1220;font-size:18px;
+}
+.brand-text{font-size:14px;letter-spacing:.14em;color:#cbd5f5;font-weight:650;}
+
+h2.title{text-align:center;font-size:26px;margin-bottom:6px;}
+p.subtitle{text-align:center;font-size:14px;color:#94a3b8;margin-bottom:26px;}
+
+/* Inputs */
+label{font-size:13px;color:#cbd5f5;display:block;margin-bottom:6px;}
+.input{
+  width:100%;padding:11px 14px;border-radius:12px;margin-bottom:18px;
+  border:1px solid rgba(148,163,184,.4);background:rgba(15,23,42,.55);
+  color:#e5e7eb;font-size:14px;outline:none;
+}
+.input:focus{border-color:#22d3ee;}
+
+/* Buttons */
+.btn{
+  width:100%;padding:12px 22px;border-radius:999px;border:none;
+  background:linear-gradient(135deg,#22c55e,#22d3ee);
+  color:#020617;font-size:15px;font-weight:600;cursor:pointer;
+  box-shadow:0 16px 35px rgba(15,23,42,0.85);transition:.15s;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 22px 45px rgba(15,23,42,0.95);}
+
+.link{text-align:center;margin-top:20px;font-size:13px;color:#94a3b8;}
+.link a{color:#22d3ee;text-decoration:none;font-weight:500;cursor:pointer;}
+
+/* ------------------ DASHBOARD MOCKUP ------------------ */
+.dashboard{
+  max-width:980px;width:100%;display:flex;gap:20px;
+}
+.sidebar{
+  width:260px;padding:22px;
+  background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.4);
+  border-radius:20px;backdrop-filter:blur(16px);
+}
+.sidebar h3{font-size:14px;letter-spacing:.2em;color:#a5b4fc;margin-bottom:14px;text-transform:uppercase;}
+
+.nav a{
+  display:block;padding:10px 14px;margin-bottom:10px;border-radius:12px;
+  background:rgba(15,23,42,.8);border:1px solid rgba(148,163,184,.35);
+  color:#cbd5f5;font-size:14px;text-decoration:none;
+}
+.nav a:hover{border-color:#22d3ee;color:#22d3ee;}
+
+.main-area{
+  flex:1;padding:26px;border-radius:20px;
+  background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.35);
+}
+
+/* Chat preview */
+.chat-box{
+  background:rgba(15,23,42,.7);
+  padding:16px;border-radius:14px;border:1px solid rgba(148,163,184,.4);
+  height:280px;overflow-y:auto;color:#cbd5f5;margin-bottom:16px;
+}
+.msg{margin-bottom:12px;}
+.msg strong{color:#22d3ee;font-weight:600;}
+
+/* Workspace + Invite */
+.section-title{font-size:18px;margin-bottom:10px;color:#e5e7eb;}
+
+</style>
+
+<script>
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+</script>
+</head>
+
+
+<body>
+
+<div class="wrapper">
+
+<!-- ---------------- LOGIN SCREEN ---------------- -->
+<div id="login" class="screen card">
+
+  <div class="brand">
+    <div class="brand-logo">S</div>
+    <div class="brand-text">SEteams</div>
+  </div>
+
+  <h2 class="title">Welcome Back</h2>
+  <p class="subtitle">Login to your secure workspace</p>
+
+  <label>Email</label>
+  <input type="email" class="input" placeholder="you@example.com">
+
+  <label>Password</label>
+  <input type="password" class="input" placeholder="••••••••">
+
+  <button class="btn" onclick="showScreen('dashboard')">Login</button>
+
+  <p class="link">
+    <a onclick="showScreen('forgot')">Forgot password?</a>
+    <br><br>
+    Don't have an account?
+    <a onclick="showScreen('signup')">Create one</a>
+  </p>
+</div>
+
+
+<!-- ---------------- SIGNUP SCREEN ---------------- -->
+<div id="signup" class="screen card hidden">
+
+  <div class="brand">
+    <div class="brand-logo">S</div>
+    <div class="brand-text">SEteams</div>
+  </div>
+
+  <h2 class="title">Create Account</h2>
+  <p class="subtitle">Start your secure workspace</p>
+
+  <label>Full Name</label>
+  <input type="text" class="input" placeholder="John Doe">
+
+  <label>Email</label>
+  <input type="email" class="input" placeholder="you@example.com">
+
+  <label>Password</label>
+  <input type="password" class="input" placeholder="Create a password">
+
+  <button class="btn" onclick="showScreen('workspace')">Continue</button>
+
+  <p class="link">
+    Already have an account?
+    <a onclick="showScreen('login')">Login</a>
+  </p>
+</div>
+
+
+<!-- ---------------- FORGOT PASSWORD ---------------- -->
+<div id="forgot" class="screen card hidden">
+
+  <h2 class="title">Reset Password</h2>
+  <p class="subtitle">Enter your email to receive reset link</p>
+
+  <label>Email</label>
+  <input type="email" class="input" placeholder="you@example.com">
+
+  <button class="btn" onclick="showScreen('reset')">Send reset link</button>
+
+  <p class="link">
+    <a onclick="showScreen('login')">Back to login</a>
+  </p>
+</div>
+
+
+<!-- ---------------- RESET PASSWORD ---------------- -->
+<div id="reset" class="screen card hidden">
+
+  <h2 class="title">New Password</h2>
+  <p class="subtitle">Set a strong password</p>
+
+  <label>New Password</label>
+  <input type="password" class="input" placeholder="••••••••">
+
+  <label>Confirm Password</label>
+  <input type="password" class="input" placeholder="••••••••">
+
+  <button class="btn" onclick="showScreen('login')">Save Password</button>
+</div>
+
+
+<!-- ---------------- WORKSPACE CREATION ---------------- -->
+<div id="workspace" class="screen card hidden">
+
+  <h2 class="title">Create Workspace</h2>
+  <p class="subtitle">Your private secure company space</p>
+
+  <label>Workspace Name</label>
+  <input type="text" class="input" placeholder="Your Company Name">
+
+  <label>Industry</label>
+  <input type="text" class="input" placeholder="Technology, Finance, etc.">
+
+  <button class="btn" onclick="showScreen('invite')">Create Workspace</button>
+</div>
+
+
+<!-- ---------------- INVITE MEMBERS ---------------- -->
+<div id="invite" class="screen card hidden">
+
+  <h2 class="title">Invite Members</h2>
+  <p class="subtitle">Add colleagues to your workspace</p>
+
+  <label>Email</label>
+  <input type="email" class="input" placeholder="member@example.com">
+
+  <button class="btn" onclick="showScreen('dashboard')">Finish</button>
+</div>
+
+
+<!-- ---------------- DASHBOARD + CHAT ---------------- -->
+<div id="dashboard" class="screen hidden">
+  <div class="dashboard">
+
+    <aside class="sidebar">
+      <h3>Workspace</h3>
+      <div class="nav">
+        <a onclick="showScreen('dashboard')">Home</a>
+        <a onclick="showScreen('chat')">Team Chat</a>
+        <a onclick="showScreen('workspace')">Workspace Settings</a>
+        <a onclick="showScreen('invite')">Invite Members</a>
+        <a onclick="showScreen('login')">Logout</a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <h2 class="section-title">Welcome to SEteams Dashboard</h2>
+      <p>You have created a secure private company workspace.</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ---------------- CHAT SCREEN ---------------- -->
+<div id="chat" class="screen hidden">
+  <div class="dashboard">
+
+    <aside class="sidebar">
+      <h3>Channels</h3>
+      <div class="nav">
+        <a># general</a>
+        <a># security</a>
+        <a># dev-team</a>
+        <a onclick="showScreen('dashboard')">Back</a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <h2 class="section-title">Team Chat</h2>
+
+      <div class="chat-box">
+        <div class="msg"><strong>Alice:</strong> Morning team!</div>
+        <div class="msg"><strong>Bob:</strong> Working on the encrypted file module.</div>
+      </div>
+
+      <input class="input" placeholder="Type a message...">
+    </div>
+
+  </div>
+</div>
+
+</div> <!-- wrapper end -->
+
+</body>
+</html>
